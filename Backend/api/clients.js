@@ -55,25 +55,6 @@ module.exports = app => {
             .then(client => res.json(client))
             .catch(err => res.status(500).send(err))
     }
-
-    /* deletar cliente
-    const remove = async (req, res) => {
-        try {
-            const articles = await app.db('articles')
-                .where({ clientId: req.params.id })
-            notExistsOrError(articles, 'Usuário possui artigos.')
-
-            const rowsUpdated = await app.db('clients')
-                .update({deletedAt: new Date()})
-                .where({ id: req.params.id })
-            existsOrError(rowsUpdated, 'Usuário não foi encontrado.')
-
-            res.status(204).send()
-        } catch(msg) {
-            res.status(400).send(msg)
-        }
-    }
-    */
-
+    
     return { save, get, getById }
 }

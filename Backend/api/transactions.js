@@ -17,6 +17,7 @@ module.exports = app => {
             existsOrError(clientFromDB, 'Cliente não cadastrado')
             isNumberOrError(transaction.value,'O valor da transação não é um número')
             existsOrError(transaction.type,'Tipo de transação não informado')
+            if (transaction.type === 'credit') existsOrError(transaction.installments,'Número de parcelas não informado')
             existsOrError(transaction.card.number,'Número do cartão não informado')
             existsOrError(transaction.card.expiry,'Validade do cartão não informada')
             existsOrError(transaction.card.cvv,'Cvv do cartão não informado')
@@ -40,6 +41,7 @@ module.exports = app => {
         // insere transação no banco
         app.db('transactions')
             .insert(transaction)
+            .catch(err => res.status(500).send(err))
         // atualiza financials do cliente
         const financial = process(transaction)
         // so responde requição depois de processar financial
@@ -50,5 +52,31 @@ module.exports = app => {
             
     }
 
-    return  {save}
+    // obter todos as transactions
+    const get = (req, res) => {
+        app.db('transactions')
+            .select('id', 'value', 'description', 'type', 'installments', 'card_number', 'card_expiry', 'card_cvv', 'card_holder', 'clientID')
+            .then(transactions => res.json(transactions))
+            .catch(err => res.status(500).send(err))
+    }
+
+    // obter transaction por clientID
+    const getByClientId = (req, res) => {
+        app.db('transactions')
+            .select('id', 'value', 'description', 'type', 'installments', 'card_number', 'card_expiry', 'card_cvv', 'card_holder', 'clientID')
+            .where({ clientID: req.params.id })
+            .then(transactions =>  res.json(transactions))
+            .catch(err => res.status(500).send(err))
+    }
+
+    // obter transaction por client ID e type
+    const getByIdAndType = (req, res) => {
+        app.db('transactions')
+            .select('id', 'value', 'description', 'type', 'installments', 'card_number', 'card_expiry', 'card_cvv', 'card_holder', 'clientID')
+            .where({ clientID: req.params.id } && {type: req.params.type})
+            .then(client => res.json(client))
+            .catch(err => res.status(500).send(err))
+    }
+
+    return  {save, get, getByClientId, getByIdAndType}
 }

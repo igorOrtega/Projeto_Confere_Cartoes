@@ -1,5 +1,6 @@
 module.exports = app => {
 
+    // funções de data
     Date.prototype.addDays = function(days) {
         var date = new Date(this.valueOf());
         date.setDate(date.getDate() + days);
@@ -13,18 +14,18 @@ module.exports = app => {
     }
 
     function formatDate(date) {
-      
         var day = date.getDate();
-        var month = date.getMonth();
+        var month = date.getMonth() + 1;
         var year = date.getFullYear();
       
         return pad(day,2) + '/' + pad(month,2) + '/' + year;
       }
       
 
-    // processa o financial, de acordo com as regras de negócio
+    // processa a transação e gera financials, de acordo com as regras de negócio
     function process(transaction) {
 
+        var financials = []
         const financial = {}
 
         financial.clientID = transaction.clientID
@@ -35,32 +36,56 @@ module.exports = app => {
             // desconto de 2,8%
             financial.value = (transaction.value)*(0.972)
 
+            financials.push({...financial})
+
         } else if (transaction.type === 'credit'){
             // status como expected
             financial.status = 'expected'
             // a vista
             if (transaction.installments === 1) {
+
                 // adiciona 30 dias na data de recebimento
-                financial.received_date = formatDate((new Date()).addDays(30))
+                financial.received_date = formatDate(new Date().addDays(30))
+
                 // desconto de 3,2%
                 financial.value = (transaction.value)*(0.968)
-            } else if (transaction.installments >= 2 && transaction.installments <= 6) {
-                console.log('ok1')
-                // adiciona (30 * N parcelas) dias na data de recebimento
-                financial.received_date = formatDate((new Date()).addDays((30*transaction.installments)))
-                console.log((30*transaction.installments))
-                // desconto de 3,8%
-                financial.value = (transaction.value)*(0.962)
-            } else if (transaction.installments >= 7 && transaction.installments <= 12) {
-                // adiciona (30 * N parcelas) dias na data de recebimento
-                financial.received_date = formatDate((new Date()).addDays(30*transaction.installments))
-                // desconto de 4,2%
-                financial.value = (transaction.value)*(0.958)
-            }
-            
-        }
 
-        return financial
+                financials.push({...financial})
+
+            // 2 a 6 parcelas
+            } else if (transaction.installments >= 2 && transaction.installments <= 6) {
+            
+                const installment = (transaction.value/transaction.installments)
+                
+                // gera um financial para cada parcela
+                for (var N = 1; N <= transaction.installments; N++) {
+                    // adiciona (30 * N) dias na data de recebimento
+                    financial.received_date = formatDate(new Date().addDays((30*N)))
+                    // desconto de 3,8%
+                    financial.value = (installment)*(0.962)
+
+                    financials.push({...financial})
+                }
+                
+            // 7 a 12 parcelas
+            } else if (transaction.installments >= 7 && transaction.installments <= 12) {
+                
+                const installment = (transaction.value/transaction.installments)
+                
+                // gera um financial para cada parcela
+                for (var N = 1; N <= transaction.installments; N++) {
+                    // adiciona (30 * N) dias na data de recebimento
+                    financial.received_date = formatDate(new Date().addDays((30*N)))
+                    // desconto de 4,2%
+                    financial.value = (installment)*(0.958)
+
+                    financials.push({...financial})
+                }
+
+            }
+        }
+        console.log(financials)
+        return financials
     }
 
     // obter todos os financials
@@ -75,9 +100,8 @@ module.exports = app => {
     const getById = (req, res) => {
         app.db('financials')
             .select('id', 'status', 'received_date', 'value', 'clientID')
-            .where({ id: req.params.id })
-            .first()
-            .then(client => res.json(client))
+            .where({ clientID: req.params.id })
+            .then(financials => res.json(financials))
             .catch(err => res.status(500).send(err))
     }
 
@@ -85,11 +109,36 @@ module.exports = app => {
     const getByIdAndStatus = (req, res) => {
         app.db('financials')
             .select('id', 'status', 'received_date', 'value', 'clientID')
-            .where({ id: req.params.id } && {status: req.params.status})
-            .first()
-            .then(client => res.json(client))
+            .where({ clientID: req.params.id } && {status: req.params.status})
+            .then(financials => res.json(financials))
             .catch(err => res.status(500).send(err))
     }
 
-    return { process, get, getById, getByIdAndStatus }
+    const getBalance = (req, res) => {
+
+        const balance = {}
+
+        app.db('financials')
+            .sum('value')
+            .where({clientID: req.params.id, status: "received"})
+            .first()
+            .then(avaiableBalance => {
+                balance.avaiable_Balance = avaiableBalance.sum
+                if (balance.avaiable_Balance === null) balance.avaiable_Balance = 0
+                })
+            .catch(err => res.status(500).send(err))
+                
+        app.db('financials')
+            .sum('value')
+            .where({clientID: req.params.id, status: "expected"})
+            .first()
+            .then(expectedBalance => { 
+                balance.expected_Balance = expectedBalance.sum
+                if (balance.expected_Balance === null) balance.expected_Balance = 0
+                res.json(balance)
+            })
+            .catch(err => res.status(500).send(err))
+    }
+
+    return { process, get, getById, getByIdAndStatus, getBalance }
 }
