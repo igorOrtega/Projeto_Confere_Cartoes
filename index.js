@@ -10,6 +10,8 @@ const consign = require('consign')
 
 consign()
     .then('./config/middlewares.js')
+    .then('./api/validations.js')
+    .then('./api/financials.js')
     .then('./api')
     .then('./config/routes.js')
     .into(app)

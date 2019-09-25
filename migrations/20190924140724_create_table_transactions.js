@@ -6,10 +6,12 @@ exports.up = function(knex) {
         table.string('description')
         table.string('type').notNull()
         table.string('installments')
-        table.string('cardNumber').notNull()
-        table.string('cardExpiry').notNull()
-        table.string('cardCvv').notNull()
-        table.string('cardHolder').notNull()
+        table.string('card_number').notNull()
+        table.string('card_expiry').notNull()
+        table.string('card_cvv').notNull()
+        table.string('card_holder').notNull()
+        table.integer('clientID').references('id')
+            .inTable('clients').notNull()
     })
   
 };
