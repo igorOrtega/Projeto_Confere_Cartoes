@@ -5,8 +5,10 @@ exports.up = function(knex) {
         table.string('status').notNull()
         table.string('received_date')
         table.float('value').notNull()
-        table.integer('clientID').references('id')
+        table.integer('client_id').references('id')
             .inTable('clients').notNull()
+        table.integer('transaction_id').references('id')
+            .inTable('transactions').notNull()
     })
 };
 

@@ -11,23 +11,23 @@ module.exports = app => {
     app.route('/transactions')
         .get(app.api.transactions.get)
 
-    app.route('/transactions/:id')
+    app.route('/transactions/:clientId')
         .post(app.api.transactions.save)
         .get(app.api.transactions.getByClientId)
     
-    app.route('/transactions/:id/:type')
-        .get(app.api.transactions.getByIdAndType)
+    app.route('/transactions/:clientId/:type')
+        .get(app.api.transactions.getByClientIdAndType)
     
     app.route('/financials')
         .get(app.api.financials.get)
     
-    app.route('/financials/:id')
-        .get(app.api.financials.getById)
+    app.route('/financials/:clientId')
+        .get(app.api.financials.getByClientId)
 
-    app.route('/financials/:id/:status')
-        .get(app.api.financials.getByIdAndStatus)
+    app.route('/financials/:clientId/:status')
+        .get(app.api.financials.getByClientIdAndStatus)
     
-    app.route('/balance/:id')
+    app.route('/balance/:clientId')
         .get(app.api.financials.getBalance)
     
 }

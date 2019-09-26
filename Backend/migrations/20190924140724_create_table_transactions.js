@@ -10,7 +10,7 @@ exports.up = function(knex) {
         table.string('card_expiry').notNull()
         table.string('card_cvv').notNull()
         table.string('card_holder').notNull()
-        table.integer('clientID').references('id')
+        table.integer('client_id').references('id')
             .inTable('clients').notNull()
     })
   

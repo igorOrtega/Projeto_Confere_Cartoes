@@ -7,11 +7,11 @@ module.exports = app => {
         
         const transaction = {...req.body}
         
-        transaction.clientID = req.params.id
+        transaction.client_id = req.params.clientId
 
         // consulta se usuario passado está cadastrado
         const clientFromDB = await app.db('clients')
-            .where({ id: transaction.clientID }).first()
+            .where({ id: transaction.client_id }).first()
 
         try {
             existsOrError(clientFromDB, 'Cliente não cadastrado')
@@ -39,11 +39,13 @@ module.exports = app => {
         delete transaction.card
 
         // insere transação no banco
-        app.db('transactions')
+        await app.db('transactions')
+            .returning('id')
             .insert(transaction)
+            .then(id => transaction.id = id[0]) // devolve como array o id
             .catch(err => res.status(500).send(err))
         // atualiza financials do cliente
-        const financial = process(transaction)
+        const financial = await process(transaction)
         // so responde requição depois de processar financial
         app.db('financials')
             .insert(financial)
@@ -55,28 +57,28 @@ module.exports = app => {
     // obter todos as transactions
     const get = (req, res) => {
         app.db('transactions')
-            .select('id', 'value', 'description', 'type', 'installments', 'card_number', 'card_expiry', 'card_cvv', 'card_holder', 'clientID')
+            .select('id', 'value', 'description', 'type', 'installments', 'card_number', 'card_expiry', 'card_cvv', 'card_holder', 'client_id')
             .then(transactions => res.json(transactions))
             .catch(err => res.status(500).send(err))
     }
 
-    // obter transaction por clientID
+    // obter transaction por clientId
     const getByClientId = (req, res) => {
         app.db('transactions')
-            .select('id', 'value', 'description', 'type', 'installments', 'card_number', 'card_expiry', 'card_cvv', 'card_holder', 'clientID')
-            .where({ clientID: req.params.id })
+            .select('id', 'value', 'description', 'type', 'installments', 'card_number', 'card_expiry', 'card_cvv', 'card_holder', 'client_id')
+            .where({ client_id: req.params.clientId })
             .then(transactions =>  res.json(transactions))
             .catch(err => res.status(500).send(err))
     }
 
     // obter transaction por client ID e type
-    const getByIdAndType = (req, res) => {
+    const getByClientIdAndType = (req, res) => {
         app.db('transactions')
-            .select('id', 'value', 'description', 'type', 'installments', 'card_number', 'card_expiry', 'card_cvv', 'card_holder', 'clientID')
-            .where({ clientID: req.params.id } && {type: req.params.type})
-            .then(client => res.json(client))
+            .select('id', 'value', 'description', 'type', 'installments', 'card_number', 'card_expiry', 'card_cvv', 'card_holder', 'client_id')
+            .where({ client_id: req.params.clientId, type: req.params.type })
+            .then(transactions => res.json(transactions))
             .catch(err => res.status(500).send(err))
     }
 
-    return  {save, get, getByClientId, getByIdAndType}
+    return  {save, get, getByClientId, getByClientIdAndType}
 }

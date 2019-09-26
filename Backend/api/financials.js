@@ -28,7 +28,8 @@ module.exports = app => {
         var financials = []
         const financial = {}
 
-        financial.clientID = transaction.clientID
+        financial.client_id = transaction.client_id
+        financial.transaction_id = transaction.id
 
         if (transaction.type === 'debit') {
             financial.status = 'received'
@@ -84,32 +85,31 @@ module.exports = app => {
 
             }
         }
-        console.log(financials)
         return financials
     }
 
     // obter todos os financials
     const get = (req, res) => {
         app.db('financials')
-            .select('id', 'status', 'received_date', 'value', 'clientID')
+            .select('id', 'status', 'received_date', 'value', 'client_id', 'transaction_id')
             .then(financials => res.json(financials))
             .catch(err => res.status(500).send(err))
     }
 
-    // obter financial por clientID
-    const getById = (req, res) => {
+    // obter financial por clientId
+    const getByClientId = (req, res) => {
         app.db('financials')
-            .select('id', 'status', 'received_date', 'value', 'clientID')
-            .where({ clientID: req.params.id })
+            .select('id', 'status', 'received_date', 'value', 'client_id','transaction_id')
+            .where({ client_id: req.params.clientId })
             .then(financials => res.json(financials))
             .catch(err => res.status(500).send(err))
     }
 
     // obter financial por client ID e Status
-    const getByIdAndStatus = (req, res) => {
+    const getByClientIdAndStatus = (req, res) => {
         app.db('financials')
-            .select('id', 'status', 'received_date', 'value', 'clientID')
-            .where({ clientID: req.params.id } && {status: req.params.status})
+            .select('id', 'status', 'received_date', 'value', 'client_id','transaction_id')
+            .where({ client_id: req.params.clientId, status: req.params.status})
             .then(financials => res.json(financials))
             .catch(err => res.status(500).send(err))
     }
@@ -120,7 +120,7 @@ module.exports = app => {
 
         app.db('financials')
             .sum('value')
-            .where({clientID: req.params.id, status: "received"})
+            .where({client_id: req.params.clientId, status: "received"})
             .first()
             .then(avaiableBalance => {
                 balance.avaiable_Balance = avaiableBalance.sum
@@ -130,7 +130,7 @@ module.exports = app => {
                 
         app.db('financials')
             .sum('value')
-            .where({clientID: req.params.id, status: "expected"})
+            .where({client_id: req.params.clientId, status: "expected"})
             .first()
             .then(expectedBalance => { 
                 balance.expected_Balance = expectedBalance.sum
@@ -140,5 +140,5 @@ module.exports = app => {
             .catch(err => res.status(500).send(err))
     }
 
-    return { process, get, getById, getByIdAndStatus, getBalance }
+    return { process, get, getByClientId, getByClientIdAndStatus, getBalance }
 }
