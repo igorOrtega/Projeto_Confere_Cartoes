@@ -1,4 +1,8 @@
 module.exports = app => {
+    
+    app.get('/', function(req, res) {
+        res.sendFile('readme.html');;
+      });
 
     app.route('/clients')
         .post(app.api.clients.save)
