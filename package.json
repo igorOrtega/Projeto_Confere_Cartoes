@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon",
+    "start": "node index.js",
     "production": "pm2 start index.js --name confere-cartoes",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
