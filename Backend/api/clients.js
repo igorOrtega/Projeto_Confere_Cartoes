@@ -41,7 +41,7 @@ module.exports = app => {
     // obter clientes
     const get = (req, res) => {
         app.db('clients')
-            .select('id', 'name', 'cpf')
+            .select()
             .then(clients => res.json(clients))
             .catch(err => res.status(500).send(err))
     }
@@ -49,7 +49,7 @@ module.exports = app => {
     // obter cliente por ID
     const getById = (req, res) => {
         app.db('clients')
-            .select('id', 'name', 'cpf')
+            .select()
             .where({ id: req.params.id })
             .first()
             .then(client => res.json(client))

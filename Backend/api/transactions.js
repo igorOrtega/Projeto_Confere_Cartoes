@@ -57,7 +57,7 @@ module.exports = app => {
     // obter todos as transactions
     const get = (req, res) => {
         app.db('transactions')
-            .select('id', 'value', 'description', 'type', 'installments', 'card_number', 'card_expiry', 'card_cvv', 'card_holder', 'client_id')
+            .select()
             .then(transactions => res.json(transactions))
             .catch(err => res.status(500).send(err))
     }
@@ -65,7 +65,7 @@ module.exports = app => {
     // obter transaction por clientId
     const getByClientId = (req, res) => {
         app.db('transactions')
-            .select('id', 'value', 'description', 'type', 'installments', 'card_number', 'card_expiry', 'card_cvv', 'card_holder', 'client_id')
+            .select()
             .where({ client_id: req.params.clientId })
             .then(transactions =>  res.json(transactions))
             .catch(err => res.status(500).send(err))
@@ -74,7 +74,7 @@ module.exports = app => {
     // obter transaction por client ID e type
     const getByClientIdAndType = (req, res) => {
         app.db('transactions')
-            .select('id', 'value', 'description', 'type', 'installments', 'card_number', 'card_expiry', 'card_cvv', 'card_holder', 'client_id')
+            .select()  
             .where({ client_id: req.params.clientId, type: req.params.type })
             .then(transactions => res.json(transactions))
             .catch(err => res.status(500).send(err))

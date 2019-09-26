@@ -29,5 +29,9 @@ module.exports = app => {
     
     app.route('/balance/:clientId')
         .get(app.api.financials.getBalance)
+
+    // filtro por data
+    app.route('/balanceAt/:clientId/:months')
+        .get(app.api.financials.getBalanceExpectedDate)
     
 }
