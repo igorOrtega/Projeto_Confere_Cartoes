@@ -1,7 +1,7 @@
 module.exports = app => {
     
     app.get('/', function(req, res) {
-        res.sendFile(__dirname + '../readme.html');;
+        res.sendFile(__dirname + '/readme.html');;
       });
 
     app.route('/clients')
