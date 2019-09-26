@@ -1,2 +1,103 @@
-<h1>Projeto Confere Cartões</h1><br>
-<h2>Desafio Backend</h2>
+<h1>Projeto Confere Cartões</h1><br><br>
+<h2>Desafio Backend</h2><br>
+
+<h3><b>Instruções de uso:</b></h3><br>
+
+    Realizei o deploy da API atrevés do heroku, portanto irei informar a URL caso o teste seja feito via heroku e a URL caso o teste seja local.<br>
+    
+    Em caso de teste local:<br><br>
+    
+        - é necessário instalar o postgres, com a senha do usuário "postgres" sendo "123456", e além disso criar uma banco chamado "projeto_confere".<br><br>
+    
+        - Com o node instalado, rodar o comando "npm i" para instalar as dependencias, e depois disso, rodar "npm start" na pasta do projeto.<br><br>
+    
+    A fim de deixar o projeto mais completo, criei uma entidade "clientes", que representa os clientes que utilizam o serviço da confere cartões. Com isso, antes de qualquer teste, é necessário cadastrar ao menos um cliente, através de uma requisição POST nas seguintes URLs:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/clients<br>
+    ou<br>
+    http://127.0.0.1:3000/clients<br><br>
+    
+    com o conteúdo JSON no body com o seguinte formato: <br><br>
+    
+    {<br>
+        "name": "Igor Ortega",<br>
+        "cpf": "38708330840"<br>
+    }<br>
+    
+    Todos usuários podem ser listados através de GET nas URLs:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/clients<br>
+    ou<br>
+    http://127.0.0.1:3000/clients<br><br>
+    
+    Também é possível retornar o usuário passando seu id de cadastro, sendo que o id é incrementado a cada usuário cadastrado no banco (tal lógica foi aplicada também para os financials e as transactions). Para isso efetuar um GET em umas da URLs:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/clients/[id do cliente]<br>
+    ou<br>
+    http://127.0.0.1:3000/clients/[id do cliente]<br><br>
+    
+    Exemplo:https://psp-conferecartoes.herokuapp.com/clients/1<br><br>
+    
+    Pode-se, também alterar os dados de um usuário cadastrado, efetuando um PUT em uma das URLs:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/clients/[id do cliente]<br>
+    ou<br>
+    http://127.0.0.1:3000/clients/[id do cliente]<br>
+    
+    O desafio consiste em um Payment Service Provider logo, é necessário registrar as transações (transactions) dos clientes da confere. Para registrar uma trasaction, basta fazer um POST em uma das seguintes URLs, passando o id do cliente:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/transactions/[id do cliente]<br>
+    ou<br>
+    http://127.0.0.1:3000/transactions/[id do cliente]<br><br>
+    
+    Foi implementado um serviço para retornar todas as transactions registradas através de um GET em uma das seguintes URLs:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/transactions<br>
+    ou<br>
+    http://127.0.0.1:3000/transactions<br><br>
+    
+    Pode-se filtrar as transactions por id do cliente e por tipo (debit ou credit)<br><br>
+    
+    Por id do client, GET em:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/transactions/[id do cliente]<br>
+    ou<br>
+    http://127.0.0.1:3000/transactions/[id do cliente]<br><br>
+    
+    Por id do client e tipo, GET em:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/transactions/[id do cliente]/[tipo]<br>
+    ou<br>
+    http://127.0.0.1:3000/transactions/[id do cliente]/[tipo]<br><br>
+    
+    Para cada transação registrada, o PSP desenvolvido registra um ou mais financials (recebíveis) para o cliente da confere, de acordo com as regras de negócio informadas no enunciado. Para obter todos os financials, indenpendentemente do cliente (ou seja, lista todos os recebíveis de todos os clientes da confere), basta fazer um GET em:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/financials<br>
+    ou<br>
+    http://127.0.0.1:3000/financials<br><br>
+    
+    Pode-se filtrar as financials por id do cliente e por status (received ou expected)<br><br>
+    
+    Por id do client, GET em:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/financials/[id do cliente]<br>
+    ou<br>
+    http://127.0.0.1:3000/financials/[id do cliente]<br><br>
+    
+    Por id do client e status, GET em:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/financials/[id do cliente]/[status]<br>
+    ou<br>
+    http://127.0.0.1:3000/financials/[id do cliente]/[status]<br><br>
+    
+    Por fim, é possível obter o saldo disponível do cliente e o saldo a receber, através de um GET, informando o id do cliente, em:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/balance/[id do cliente]<br>
+    ou<br>
+    http://127.0.0.1:3000/balance/[id do cliente]<br><br>
+    
+    Também é possível filtrar os saldos que o cliente pode receber até N meses a partir da data atual, ou seja, retorna saldo disponível total que terá daqui N meses. Para isso realizar um GET em:<br><br>
+    
+    https://psp-conferecartoes.herokuapp.com/balanceAt/[id do cliente]/[N meses]<br>
+    ou<br>
+    http://127.0.0.1:3000/balanceAt/[id do cliente]/[N meses]<br>

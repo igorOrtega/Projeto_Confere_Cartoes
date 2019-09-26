@@ -153,6 +153,9 @@ module.exports = app => {
             .then(expectedBalance => { 
                 balance.expected_Balance = expectedBalance.sum
                 if (balance.expected_Balance === null) balance.expected_Balance = 0
+                balance.total_in_N_months = balance.expected_Balance +  balance.avaiable_Balance
+                delete balance.expected_Balance
+                delete balance.avaiable_Balance
                 res.json(balance)
             })
             .catch(err => res.status(500).send(err))

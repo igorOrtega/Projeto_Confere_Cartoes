@@ -1,6 +1,10 @@
 # Projeto_Confere_Cartoes
 
-Instruções de uso:
+Instruções de uso através da pagina principal: 
+
+https://psp-conferecartoes.herokuapp.com/
+ou
+http://127.0.0.1:3000/
 
 Realizei o deploy da API atrevés do heroku, portanto irei informar a URL caso o teste seja feito via heroku e a URL caso o teste seja local.
 
@@ -95,8 +99,8 @@ https://psp-conferecartoes.herokuapp.com/balance/[id do cliente]
 ou
 http://127.0.0.1:3000/balance/[id do cliente]
 
-Também é possível filtrar os saldos que o cliente pode receber até N meses a partir da data atual, ou seja, retorna saldo disponível e saldo expected que estará disponível em até N meses. Para isso realizar um GET em:
+Também é possível filtrar os saldos que o cliente pode receber até N meses a partir da data atual, ou seja, retorna saldo disponível total que terá daqui N meses. Para isso realizar um GET em:
 
-https://psp-conferecartoes.herokuapp.com/balance/[id do cliente]/[N meses]
+https://psp-conferecartoes.herokuapp.com/balanceAt/[id do cliente]/[N meses]
 ou
-http://127.0.0.1:3000/balance/[id do cliente]/[N meses]
+http://127.0.0.1:3000/balanceAt/[id do cliente]/[N meses]
