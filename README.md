@@ -55,7 +55,7 @@ https://psp-conferecartoes.herokuapp.com/transactions/[id do cliente]
 ou
 http://127.0.0.1:3000/transactions/[id do cliente]
 
-No body da requisição, espera-se algo no seguinte formato:
+No body da requisição, espera-se algo no seguinte formato ( sem os comentários "//"):
 
 {
 	"value": 100.00, // Valor da transação
