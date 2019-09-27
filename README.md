@@ -14,6 +14,8 @@ Em caso de teste local:
 
     - Com o node instalado, rodar o comando "npm i" para instalar as dependencias, e depois disso, rodar "npm start" na pasta do projeto.
 
+Realizei os testes utilizando o Postman, mas também é possível usar o curl
+
 A fim de deixar o projeto mais completo, criei uma entidade "clientes", que representa os clientes que utilizam o serviço da confere cartões. Com isso, antes de qualquer teste, é necessário cadastrar ao menos um cliente, através de uma requisição POST nas seguintes URLs:
 
 https://psp-conferecartoes.herokuapp.com/clients
