@@ -55,6 +55,21 @@ https://psp-conferecartoes.herokuapp.com/transactions/[id do cliente]
 ou
 http://127.0.0.1:3000/transactions/[id do cliente]
 
+No body da requisição, espera-se algo no seguinte formato:
+
+{
+	"value": 100.00, // Valor da transação
+	"description": "Bicicleta ZXY Aro 21", // Descrição da transação
+	"type": "debit", // Tipo de transação (`debit`, `credit`, `installment_credit`)
+	"installments": null, // Número de parcelas, caso seja debito, passar `null`
+	"card": {
+		"number": "5200555500001234", // Número do cartão
+		"expiry": "20/21", // Validade do cartão
+		"cvv": "123", // Código de verificação do cartão
+		"holder": "Fulano de tal" // Nome do portador do cartão
+	}
+}
+
 Foi implementado um serviço para retornar todas as transactions registradas através de um GET em uma das seguintes URLs:
 
 https://psp-conferecartoes.herokuapp.com/transactions
